@@ -9,5 +9,7 @@ package itson.edu.mx.enums;
  * @author torre
  */
 public enum EstadoTarjeta {
-    
+    ACTIVA,
+    BLOQUEADA,
+    EXPIRADA
 }

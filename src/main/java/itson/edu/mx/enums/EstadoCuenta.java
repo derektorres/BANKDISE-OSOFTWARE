@@ -9,5 +9,6 @@ package itson.edu.mx.enums;
  * @author torre
  */
 public enum EstadoCuenta {
-    
+    ACTIVA,
+    BLOQUEADA
 }
