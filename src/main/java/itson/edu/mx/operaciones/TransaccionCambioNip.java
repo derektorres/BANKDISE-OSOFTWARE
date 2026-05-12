@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package itson.edu.mx.operaciones;
+import itson.edu.mx.Dao.ITarjetaDao;
+import itson.edu.mx.Dao.TarjetaDao;
 import java.util.Date;
 /**
  *
@@ -10,24 +12,41 @@ import java.util.Date;
  */
 
 public class TransaccionCambioNip extends Transaccion {
-    private String nuevoNipCifrado;
+    private String numeroTarjeta;
+    private String nipAnterior;
+    private String nipNuevo;
+    private ITarjetaDao tarjetaDao;
 
-    public TransaccionCambioNip() {
-        super();
-    }
-
-    public TransaccionCambioNip(int idTransaccion, Date fecha, String descripcion, int cuentaID, int atmId, String nuevoNipCifrado) {
-        super(idTransaccion, fecha, descripcion, cuentaID, atmId);
-        this.nuevoNipCifrado = nuevoNipCifrado;
+    public TransaccionCambioNip(int transaccionId, Date fecha, String descripcion, int cuentaID, int atmId, String numeroTarjeta, String nipAnterior, String nipNuevo) {
+        super(transaccionId, fecha, descripcion, cuentaID, atmId);
+        this.numeroTarjeta = numeroTarjeta;
+        this.nipAnterior = nipAnterior;
+        this.nipNuevo = nipNuevo;
+        this.tarjetaDao = new TarjetaDao();
     }
 
     @Override
     public boolean ejecutar() {
-        System.out.println("Actualizando NIP para la cuenta " + cuentaID);
-        return true; 
-    }
+        
+        if (nipAnterior.equals(nipNuevo)) {
+            throw new RuntimeException("El nuevo NIP no puede ser igual al actual.");
+        }
 
-    public String getNuevoNipCifrado() { return nuevoNipCifrado; }
-    public void setNuevoNipCifrado(String nuevoNipCifrado) { this.nuevoNipCifrado = nuevoNipCifrado; }
+        if (nipNuevo == null || !nipNuevo.matches("\\d{4}")) {
+            throw new RuntimeException("El NIP debe ser de 4 dígitos numéricos.");
+        }
+
+        if (!tarjetaDao.validarTarjetaActivaYNip(numeroTarjeta, nipAnterior)) {
+            throw new RuntimeException("El NIP actual es incorrecto. No se puede realizar el cambio.");
+        }
+
+        boolean exito = tarjetaDao.actualizarNip(numeroTarjeta, nipNuevo);
+
+        if (exito) {
+            return true;
+        } else {
+            throw new RuntimeException("Error interno: No se pudo actualizar el NIP en el sistema.");
+        }
+    }
 }
   

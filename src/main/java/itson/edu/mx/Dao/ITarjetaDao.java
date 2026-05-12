@@ -11,5 +11,7 @@ package itson.edu.mx.Dao;
 public interface ITarjetaDao {
     
     boolean bloquearTarjeta(String numeroTarjeta);
+    boolean validarTarjetaActivaYNip(String numeroTarjeta, String nip);
+    boolean actualizarNip(String numeroTarjeta, String nuevoNip);
     
 }
