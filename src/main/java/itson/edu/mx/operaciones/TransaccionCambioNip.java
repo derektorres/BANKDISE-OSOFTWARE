@@ -29,15 +29,15 @@ public class TransaccionCambioNip extends Transaccion {
     public boolean ejecutar() {
         
         if (nipAnterior.equals(nipNuevo)) {
-            throw new RuntimeException("El nuevo NIP no puede ser igual al actual.");
+            throw new RuntimeException("El nuevo NIP no puede ser igual al actual");
         }
 
         if (nipNuevo == null || !nipNuevo.matches("\\d{4}")) {
-            throw new RuntimeException("El NIP debe ser de 4 dígitos numéricos.");
+            throw new RuntimeException("El NIP debe ser de 4 digitos numericos");
         }
 
         if (!tarjetaDao.validarTarjetaActivaYNip(numeroTarjeta, nipAnterior)) {
-            throw new RuntimeException("El NIP actual es incorrecto. No se puede realizar el cambio.");
+            throw new RuntimeException("El NIP actual es incorrecto no se puede realizar el cambio");
         }
 
         boolean exito = tarjetaDao.actualizarNip(numeroTarjeta, nipNuevo);

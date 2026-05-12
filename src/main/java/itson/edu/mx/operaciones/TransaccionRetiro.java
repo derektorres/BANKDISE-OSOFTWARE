@@ -30,7 +30,6 @@ public class TransaccionRetiro extends Transaccion {
         this.tarjetaDao = new TarjetaDao();
     }
 
-    // Constructor actualizado con tarjeta y NIP
     public TransaccionRetiro(int transaccionId, Date fecha, String descripcion, int atmId, double monto, Cuenta cuenta, String numeroTarjeta, String nip) {
         super(transaccionId, fecha, descripcion, cuenta.getCuentaId(), atmId);
         this.monto = monto;
@@ -46,40 +45,116 @@ public class TransaccionRetiro extends Transaccion {
     public boolean ejecutar() {
         
         if (!tarjetaDao.validarTarjetaActivaYNip(numeroTarjeta, nip)) {
-            throw new RuntimeException("Operacion rechazada: NIP incorrecto o la Tarjeta se encuentra bloqueada/inactiva.");
+            throw new RuntimeException("Operacion rechazada: NIP incorrecto o la Tarjeta se encuentra bloqueada/inactiva");
         }
 
         if (!cuenta.estaActiva()) {
-            throw new RuntimeException("Operacion rechazada: La cuenta bancaria se encuentra bloqueada.");
+            throw new RuntimeException("Operacion rechazada: La cuenta bancaria se encuentra bloqueada");
         }
 
-        if (monto > cuenta.getLimiteDiarioRetiro()) {
-            throw new RuntimeException("Operacion rechazada: El monto supera su limite diario de $" + cuenta.getLimiteDiarioRetiro());
+        if (getMonto() > getCuenta().getLimiteDiarioRetiro()) {
+            throw new RuntimeException("Operacion rechazada: El monto supera su limite diario de $" + getCuenta().getLimiteDiarioRetiro());
         }
 
-        if (monto > cuenta.getSaldoDisponible()) {
-            throw new RuntimeException("Operacion rechazada: Fondos insuficientes. Su saldo actual es: $" + cuenta.getSaldoDisponible());
+        if (getMonto() > getCuenta().getSaldoDisponible()) {
+            throw new RuntimeException("Operacion rechazada: Fondos insuficientes su saldo actual es: $" + getCuenta().getSaldoDisponible());
         }
 
-        double nuevoSaldo = cuenta.getSaldoDisponible() - monto;
+        double nuevoSaldo = getCuenta().getSaldoDisponible() - getMonto();
 
-        boolean actualizadoEnBD = cuentaDao.actualizarSaldo(cuentaID, nuevoSaldo);
+        boolean actualizadoEnBD = getCuentaDao().actualizarSaldo(cuentaID, nuevoSaldo);
 
         if (actualizadoEnBD) {
-            cuenta.setSaldoDisponible(nuevoSaldo);
+            getCuenta().setSaldoDisponible(nuevoSaldo);
             return true; 
         } else {
-            throw new RuntimeException("Error del sistema: No se pudo comunicar con el banco central.");
+            throw new RuntimeException("Error del sistema: No se pudo comunicar con el banco central");
         }
     }
-
     
-    public double getMonto() { return monto; }
-    public void setMonto(double monto) { this.monto = monto; }
-    public Cuenta getCuenta() { return cuenta; }
-    public void setCuenta(Cuenta cuenta) { this.cuenta = cuenta; }
-    public String getNumeroTarjeta() { return numeroTarjeta; }
-    public void setNumeroTarjeta(String numeroTarjeta) { this.numeroTarjeta = numeroTarjeta; }
-    public String getNip() { return nip; }
-    public void setNip(String nip) { this.nip = nip; }
+
+    /**
+     * @return the monto
+     */
+    public double getMonto() {
+        return monto;
+    }
+
+    /**
+     * @param monto the monto to set
+     */
+    public void setMonto(double monto) {
+        this.monto = monto;
+    }
+
+    /**
+     * @return the cuenta
+     */
+    public Cuenta getCuenta() {
+        return cuenta;
+    }
+
+    /**
+     * @param cuenta the cuenta to set
+     */
+    public void setCuenta(Cuenta cuenta) {
+        this.cuenta = cuenta;
+    }
+
+    /**
+     * @return the numeroTarjeta
+     */
+    public String getNumeroTarjeta() {
+        return numeroTarjeta;
+    }
+
+    /**
+     * @param numeroTarjeta the numeroTarjeta to set
+     */
+    public void setNumeroTarjeta(String numeroTarjeta) {
+        this.numeroTarjeta = numeroTarjeta;
+    }
+
+    /**
+     * @return the nip
+     */
+    public String getNip() {
+        return nip;
+    }
+
+    /**
+     * @param nip the nip to set
+     */
+    public void setNip(String nip) {
+        this.nip = nip;
+    }
+
+    /**
+     * @return the cuentaDao
+     */
+    public ICuentaDao getCuentaDao() {
+        return cuentaDao;
+    }
+
+    /**
+     * @param cuentaDao the cuentaDao to set
+     */
+    public void setCuentaDao(ICuentaDao cuentaDao) {
+        this.cuentaDao = cuentaDao;
+    }
+
+    /**
+     * @return the tarjetaDao
+     */
+    public ITarjetaDao getTarjetaDao() {
+        return tarjetaDao;
+    }
+
+    /**
+     * @param tarjetaDao the tarjetaDao to set
+     */
+    public void setTarjetaDao(ITarjetaDao tarjetaDao) {
+        this.tarjetaDao = tarjetaDao;
+    }
+    
 }

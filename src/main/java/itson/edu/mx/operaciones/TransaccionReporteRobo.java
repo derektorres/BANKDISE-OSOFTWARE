@@ -35,10 +35,10 @@ public class TransaccionReporteRobo extends Transaccion {
         boolean bloqueadaExitosamente = tarjetaDao.bloquearTarjeta(this.numeroTarjeta);
         
         if (bloqueadaExitosamente) {
-            System.out.println("Transacción exitosa: La tarjeta ha sido bloqueada permanentemente.");
+            System.out.println("Transaccion exitosa: La tarjeta ha sido bloqueada permanentemente");
             return true;
         } else {
-            System.err.println("Error en la transacción: No se pudo bloquear la tarjeta (Verifique el número).");
+            System.err.println("Error en la transaccion: No se pudo bloquear la tarjeta (Verifique el numero)");
             return false;
         }
     }

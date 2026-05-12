@@ -29,7 +29,7 @@ public class TransaccionTransferencia extends Transaccion {
     @Override
     public boolean ejecutar() {
         if (monto <= 0) throw new RuntimeException("Monto debe ser mayor a 0.");
-        if (!cuentaOrigen.estaActiva()) throw new RuntimeException("Tu cuenta está bloqueada.");
+        if (!cuentaOrigen.estaActiva()) throw new RuntimeException("Tu cuenta esta bloqueada.");
         if (monto > cuentaOrigen.getSaldoDisponible()) throw new RuntimeException("Fondos insuficientes.");
         if (cuentaOrigen.getNumeroCuenta().equals(numeroCuentaDestino)) throw new RuntimeException("No puedes transferirte a ti mismo.");
 

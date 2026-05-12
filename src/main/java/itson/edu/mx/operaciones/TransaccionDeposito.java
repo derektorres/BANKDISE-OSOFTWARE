@@ -31,28 +31,67 @@ public class TransaccionDeposito extends Transaccion {
     @Override
     public boolean ejecutar() {
         
-        if (monto <= 0) {
-            throw new RuntimeException("Operacion rechazada: El monto a depositar debe ser mayor a $0.00.");
+        if (getMonto() <= 0) {
+            throw new RuntimeException("Operacion rechazada El monto a depositar debe ser mayor a $0.00.");
         }
 
         if (!cuenta.estaActiva()) {
-            throw new RuntimeException("Operacion rechazada: No se pueden recibir depositos en una cuenta bloqueada.");
+            throw new RuntimeException("Operacion rechazada No se pueden recibir depositos en una cuenta bloqueada.");
         }
 
-        double nuevoSaldo = cuenta.getSaldoDisponible() + monto;
+        double nuevoSaldo = getCuenta().getSaldoDisponible() + getMonto();
 
-        boolean actualizadoEnBD = cuentaDao.actualizarSaldo(cuentaID, nuevoSaldo);
+        boolean actualizadoEnBD = getCuentaDao().actualizarSaldo(cuentaID, nuevoSaldo);
 
         if (actualizadoEnBD) {
-            cuenta.setSaldoDisponible(nuevoSaldo);
+            getCuenta().setSaldoDisponible(nuevoSaldo);
             return true; 
         } else {
-            throw new RuntimeException("Error del sistema: No se pudo registrar el depósito en el banco central.");
+            throw new RuntimeException("Error del sistema No se pudo registrar el deposito en el banco central.");
         }
     }
 
-    public double getMonto() { return monto; }
-    public void setMonto(double monto) { this.monto = monto; }
-    public Cuenta getCuenta() { return cuenta; }
-    public void setCuenta(Cuenta cuenta) { this.cuenta = cuenta; }
+
+    /**
+     * @return the monto
+     */
+    public double getMonto() {
+        return monto;
+    }
+
+    /**
+     * @param monto the monto to set
+     */
+    public void setMonto(double monto) {
+        this.monto = monto;
+    }
+
+    /**
+     * @return the cuenta
+     */
+    public Cuenta getCuenta() {
+        return cuenta;
+    }
+
+    /**
+     * @param cuenta the cuenta to set
+     */
+    public void setCuenta(Cuenta cuenta) {
+        this.cuenta = cuenta;
+    }
+
+    /**
+     * @return the cuentaDao
+     */
+    public ICuentaDao getCuentaDao() {
+        return cuentaDao;
+    }
+
+    /**
+     * @param cuentaDao the cuentaDao to set
+     */
+    public void setCuentaDao(ICuentaDao cuentaDao) {
+        this.cuentaDao = cuentaDao;
+    }
+    
 }
