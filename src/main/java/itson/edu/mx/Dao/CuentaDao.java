@@ -26,7 +26,11 @@ public class CuentaDao implements ICuentaDao {
     @Override
     public Cuenta autenticar(String numeroCuenta, String password) {
        
-        String sql = "SELECT * FROM cuentas WHERE numero_cuenta = ? AND password = ?";
+        String sql = "SELECT cu.*, cl.nombre AS nombre_cliente " +
+                     "FROM cuentas cu " +
+                     "INNER JOIN clientes cl ON cu.cliente_id = cl.id " +
+                     "WHERE cu.numero_cuenta = ? AND cu.password = ?";
+                     
         Cuenta cuentaEncontrada = null;
 
         try (Connection conn = conexion.obtener();
@@ -41,17 +45,15 @@ public class CuentaDao implements ICuentaDao {
                 cuentaEncontrada = new Cuenta();
                 cuentaEncontrada.setCuentaId(rs.getInt("id"));
                 cuentaEncontrada.setNumeroCuenta(rs.getString("numero_cuenta"));
-                cuentaEncontrada.setPassword(rs.getString("password"));
                 cuentaEncontrada.setSaldoDisponible(rs.getDouble("saldo"));
-                cuentaEncontrada.setLimiteDiarioRetiro(rs.getDouble("limite_retiro"));
                 String estadoStr = rs.getString("estado");
                 cuentaEncontrada.setEstadoCuenta(EstadoCuenta.valueOf(estadoStr));
+                cuentaEncontrada.setNombreCliente(rs.getString("nombre_cliente"));
             }
             
         } catch (SQLException e) {
-            System.err.println("Error al intentar autenticar la cuenta en BD: " + e.getMessage());
+            System.err.println("Error al autenticar en la BD: " + e.getMessage());
         }
-        
         
         return cuentaEncontrada;
     }
@@ -77,7 +79,11 @@ public class CuentaDao implements ICuentaDao {
     
     @Override
     public Cuenta buscarCuentaPorNumero(String numeroCuenta) {
-        String sql = "SELECT * FROM cuentas WHERE numero_cuenta = ?";
+        String sql = "SELECT cu.*, cl.nombre AS nombre_cliente " +
+                     "FROM cuentas cu " +
+                     "INNER JOIN clientes cl ON cu.cliente_id = cl.id " +
+                     "WHERE cu.numero_cuenta = ?";
+                     
         Cuenta cuentaEncontrada = null;
 
         try (Connection conn = conexion.obtener(); 
@@ -91,9 +97,9 @@ public class CuentaDao implements ICuentaDao {
                 cuentaEncontrada.setCuentaId(rs.getInt("id"));
                 cuentaEncontrada.setNumeroCuenta(rs.getString("numero_cuenta"));
                 cuentaEncontrada.setSaldoDisponible(rs.getDouble("saldo"));
-                
                 String estadoStr = rs.getString("estado");
                 cuentaEncontrada.setEstadoCuenta(EstadoCuenta.valueOf(estadoStr));
+                cuentaEncontrada.setNombreCliente(rs.getString("nombre_cliente"));
             }
             
         } catch (SQLException e) {

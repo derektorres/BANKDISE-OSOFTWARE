@@ -18,6 +18,7 @@ public class Cuenta {
     private double saldoDisponible;
     private double limiteDiarioRetiro;
     private EstadoCuenta estadoCuenta;
+    private String nombreCliente;
     
     public Cuenta() {}
 
@@ -133,6 +134,13 @@ public class Cuenta {
         this.estadoCuenta = estadoCuenta;
     }
     
+    public String getNombreCliente() {
+        return nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
     
     
     
